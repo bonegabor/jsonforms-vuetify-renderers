@@ -1,7 +1,7 @@
 {
   // apply eslint fixes on save
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "files.insertFinalNewline": true,
   // prettier extension setting

@@ -6,7 +6,7 @@
       :path="path"
     />
 
-    <v-hover v-slot="{ isHovering }">
+    <v-hover v-slot="{ isHovering, props }">
       <v-select
         v-disabled-icon-focus
         :id="control.id + '-input'"
@@ -25,7 +25,7 @@
         :item-title="(item) => t(item.label, item.label)"
         item-value="index"
         v-model="selectIndex"
-        v-bind="vuetifyProps('v-select')"
+        v-bind="Object.assign({}, props, vuetifyProps('v-select'))"
         @focus="handleFocus"
         @blur="handleBlur"
       ></v-select>

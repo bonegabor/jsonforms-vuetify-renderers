@@ -5,7 +5,7 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
+    <v-hover v-slot="{ isHovering, props }">
       <v-select
         v-disabled-icon-focus
         :id="control.id + '-input'"
@@ -23,7 +23,7 @@
         :items="control.options"
         :item-title="(item) => t(item.label, item.label)"
         item-value="value"
-        v-bind="vuetifyProps('v-select')"
+        v-bind="Object.assign({}, props, vuetifyProps('v-select'))"
         @update:modelValue="onChange"
         @focus="handleFocus"
         @blur="handleBlur"

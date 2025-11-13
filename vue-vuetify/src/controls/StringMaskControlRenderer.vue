@@ -5,34 +5,36 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
-      <v-text-field
-        v-disabled-icon-focus
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :maxlength="
-          appliedOptions.restrict ? control.schema.maxLength : undefined
-        "
-        :counter="
-          control.schema.maxLength !== undefined
-            ? control.schema.maxLength
-            : undefined
-        "
-        :clearable="isHovering"
-        v-bind="vuetifyProps('v-text-field')"
-        @focus="handleFocus"
-        @blur="handleBlur"
-        v-model="maskModel"
-        v-mask="mask"
-      />
+    <v-hover v-slot="{ isHovering, props }">
+      <div v-bind="props" style="display: contents">
+        <v-text-field
+          v-disabled-icon-focus
+          :id="control.id + '-input'"
+          :class="styles.control.input"
+          :disabled="!control.enabled"
+          :autofocus="appliedOptions.focus"
+          :placeholder="appliedOptions.placeholder"
+          :label="computedLabel"
+          :hint="control.description"
+          :persistent-hint="persistentHint()"
+          :required="control.required"
+          :error-messages="control.errors"
+          :maxlength="
+            appliedOptions.restrict ? control.schema.maxLength : undefined
+          "
+          :counter="
+            control.schema.maxLength !== undefined
+              ? control.schema.maxLength
+              : undefined
+          "
+          :clearable="isHovering"
+          v-bind="vuetifyProps('v-text-field')"
+          @focus="handleFocus"
+          @blur="handleBlur"
+          v-model="maskModel"
+          v-mask="mask"
+        />
+      </div>
     </v-hover>
   </control-wrapper>
 </template>

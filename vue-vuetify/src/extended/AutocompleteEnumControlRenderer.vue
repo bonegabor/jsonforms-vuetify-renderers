@@ -5,7 +5,7 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
+    <v-hover v-slot="{ isHovering, props }">
       <v-select
         v-if="appliedOptions.autocomplete === false"
         v-disabled-icon-focus
@@ -24,7 +24,7 @@
         :items="control.options"
         :item-title="(item) => t(item.label, item.label)"
         item-value="value"
-        v-bind="vuetifyProps('v-select')"
+        v-bind="Object.assign({}, props, vuetifyProps('v-select'))"
         @change="onChange"
         @focus="handleFocus"
         @blur="handleBlur"
@@ -47,7 +47,7 @@
         :items="control.options"
         :item-title="(item) => t(item.label, item.label)"
         item-value="value"
-        v-bind="vuetifyProps('v-autocomplete')"
+        v-bind="Object.assign({}, props, vuetifyProps('v-autocomplete'))"
         @update:model-value="onChange"
         @focus="handleFocus"
         @blur="handleBlur"

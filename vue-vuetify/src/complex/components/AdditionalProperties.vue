@@ -5,19 +5,21 @@
         <v-toolbar-title>{{ additionalPropertiesTitle }}</v-toolbar-title>
         <v-spacer></v-spacer>
 
-        <v-hover v-slot="{ isHovering }">
-          <v-text-field
-            v-disabled-icon-focus
-            :required="true"
-            :class="styles.control.input"
-            :error-messages="newPropertyErrors"
-            v-model="newPropertyName"
-            :clearable="isHovering"
-            :placeholder="placeholder"
-            :disabled="!control.enabled"
-            v-bind="vuetifyProps('v-text-field')"
-          >
-          </v-text-field>
+        <v-hover v-slot="{ isHovering, props }">
+          <div v-bind="props" style="display: contents">
+            <v-text-field
+              v-disabled-icon-focus
+              :required="true"
+              :class="styles.control.input"
+              :error-messages="newPropertyErrors"
+              v-model="newPropertyName"
+              :clearable="isHovering"
+              :placeholder="placeholder"
+              :disabled="!control.enabled"
+              v-bind="vuetifyProps('v-text-field')"
+            >
+            </v-text-field>
+          </div>
         </v-hover>
         <v-tooltip bottom>
           <template v-slot:activator="{ props }">

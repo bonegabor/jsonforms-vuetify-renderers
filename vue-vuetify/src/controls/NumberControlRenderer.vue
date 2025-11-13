@@ -5,27 +5,29 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
-      <v-text-field
-        ref="input"
-        :step="step"
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :model-value="inputValue"
-        :clearable="isHovering"
-        v-bind="vuetifyProps('v-text-field')"
-        @update:model-value="onInputChange"
-        @focus="handleFocus"
-        @blur="handleBlur"
-      ></v-text-field>
+    <v-hover v-slot="{ isHovering, props }">
+      <div v-bind="props" style="display: contents">
+        <v-text-field
+          ref="input"
+          :step="step"
+          :id="control.id + '-input'"
+          :class="styles.control.input"
+          :disabled="!control.enabled"
+          :autofocus="appliedOptions.focus"
+          :placeholder="appliedOptions.placeholder"
+          :label="computedLabel"
+          :hint="control.description"
+          :persistent-hint="persistentHint()"
+          :required="control.required"
+          :error-messages="control.errors"
+          :model-value="inputValue"
+          :clearable="isHovering"
+          v-bind="vuetifyProps('v-text-field')"
+          @update:model-value="onInputChange"
+          @focus="handleFocus"
+          @blur="handleBlur"
+        ></v-text-field>
+      </div>
     </v-hover>
   </control-wrapper>
 </template>

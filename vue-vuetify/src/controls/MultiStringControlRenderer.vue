@@ -5,35 +5,37 @@
     :isFocused="isFocused"
     :appliedOptions="appliedOptions"
   >
-    <v-hover v-slot="{ isHovering }">
-      <v-textarea
-        v-disabled-icon-focus
-        :id="control.id + '-input'"
-        :class="styles.control.input"
-        :disabled="!control.enabled"
-        :autofocus="appliedOptions.focus"
-        :placeholder="appliedOptions.placeholder"
-        :label="computedLabel"
-        :hint="control.description"
-        :persistent-hint="persistentHint()"
-        :required="control.required"
-        :error-messages="control.errors"
-        :model-value="control.data"
-        :maxlength="
-          appliedOptions.restrict ? control.schema.maxLength : undefined
-        "
-        :size="
-          appliedOptions.trim && control.schema.maxLength !== undefined
-            ? control.schema.maxLength
-            : undefined
-        "
-        :clearable="isHovering"
-        multi-line
-        v-bind="vuetifyProps('v-textarea')"
-        @update:model-value="onChange"
-        @focus="handleFocus"
-        @blur="handleBlur"
-      />
+    <v-hover v-slot="{ isHovering, props }">
+      <div v-bind="props" style="display: contents">
+        <v-textarea
+          v-disabled-icon-focus
+          :id="control.id + '-input'"
+          :class="styles.control.input"
+          :disabled="!control.enabled"
+          :autofocus="appliedOptions.focus"
+          :placeholder="appliedOptions.placeholder"
+          :label="computedLabel"
+          :hint="control.description"
+          :persistent-hint="persistentHint()"
+          :required="control.required"
+          :error-messages="control.errors"
+          :model-value="control.data"
+          :maxlength="
+            appliedOptions.restrict ? control.schema.maxLength : undefined
+          "
+          :size="
+            appliedOptions.trim && control.schema.maxLength !== undefined
+              ? control.schema.maxLength
+              : undefined
+          "
+          :clearable="isHovering"
+          multi-line
+          v-bind="vuetifyProps('v-textarea')"
+          @update:model-value="onChange"
+          @focus="handleFocus"
+          @blur="handleBlur"
+        />
+      </div>
     </v-hover>
   </control-wrapper>
 </template>
