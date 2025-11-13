@@ -37,7 +37,7 @@ import {
   optionIs,
   and,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
@@ -57,10 +57,41 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(
-      useJsonFormsControl(props),
-      (value) => value || false
-    );
+    const jsonFormsControl = useJsonFormsControl(props);
+    const vuetifyControl = useVuetifyControl(jsonFormsControl);
+    const defaultOnChange = vuetifyControl.onChange;
+
+    const isTriState = computed(() => {
+      const type = jsonFormsControl.control.value.schema?.type;
+
+      return Array.isArray(type)
+        ? type.includes('boolean') && type.includes('null')
+        : false;
+    });
+
+    const cycleBoolean = () => {
+      const current = vuetifyControl.control.value.data;
+      const normalized = current === null ? undefined : current;
+      const nextValue =
+        normalized === true ? false : normalized === false ? undefined : true;
+
+      defaultOnChange(nextValue);
+    };
+
+    const onToggleChange = (value: boolean) => {
+      if (isTriState.value) {
+        cycleBoolean();
+        return;
+      }
+
+      defaultOnChange(!!value);
+    };
+
+    return {
+      ...vuetifyControl,
+      isTriState,
+      onChange: onToggleChange,
+    };
   },
 });
 

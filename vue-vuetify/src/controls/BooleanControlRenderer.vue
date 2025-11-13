@@ -16,7 +16,7 @@
       :persistent-hint="persistentHint()"
       :required="control.required"
       :error-messages="control.errors"
-      :indeterminate="control.data === undefined"
+      :indeterminate="isTriState && control.data == null"
       :model-value="control.data"
       v-bind="vuetifyProps('v-checkbox')"
       @update:modelValue="onChange"
@@ -33,7 +33,7 @@ import {
   rankWith,
   isBooleanControl,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import {
   rendererProps,
   useJsonFormsControl,
@@ -53,9 +53,41 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVuetifyControl(useJsonFormsControl(props), (value) => {
-      return value || false;
+    const jsonFormsControl = useJsonFormsControl(props);
+    const vuetifyControl = useVuetifyControl(jsonFormsControl);
+    const defaultOnChange = vuetifyControl.onChange;
+
+    const isTriState = computed(() => {
+      const type = jsonFormsControl.control.value.schema?.type;
+
+      return Array.isArray(type)
+        ? type.includes('boolean') && type.includes('null')
+        : false;
     });
+
+    const cycleBoolean = () => {
+      const current = vuetifyControl.control.value.data;
+      const normalized = current === null ? undefined : current;
+      const nextValue =
+        normalized === true ? false : normalized === false ? undefined : true;
+
+      defaultOnChange(nextValue);
+    };
+
+    const onCheckboxChange = (value: boolean) => {
+      if (isTriState.value) {
+        cycleBoolean();
+        return;
+      }
+
+      defaultOnChange(!!value);
+    };
+
+    return {
+      ...vuetifyControl,
+      isTriState,
+      onChange: onCheckboxChange,
+    };
   },
 });
 

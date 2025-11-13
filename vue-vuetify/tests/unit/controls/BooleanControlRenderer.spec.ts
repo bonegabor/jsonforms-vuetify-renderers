@@ -60,4 +60,60 @@ describe('BooleanControlRenderer.vue', () => {
   it('should render component and match snapshot', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });
+
+  it('removes the property when toggled back to the indeterminate state for nullable booleans', async () => {
+    const triStateWrapper = mountJsonForms(
+      { toggle: true },
+      {
+        type: 'object',
+        properties: {
+          toggle: {
+            type: ['null', 'boolean'],
+          },
+        },
+      },
+      renderers,
+      {
+        type: 'Control',
+        scope: '#/properties/toggle',
+      }
+    );
+
+    const input = triStateWrapper.find('input[type="checkbox"]');
+    await input.trigger('click');
+    await input.trigger('click');
+
+    expect('toggle' in triStateWrapper.vm.$data.data).toBe(false);
+    expect(triStateWrapper.vm.$data.data).toEqual({});
+
+    triStateWrapper.destroy();
+  });
+
+  it('keeps two-state behaviour for pure boolean schemas', async () => {
+    const twoStateWrapper = mountJsonForms(
+      {},
+      {
+        type: 'object',
+        properties: {
+          toggle: {
+            type: 'boolean',
+          },
+        },
+      },
+      renderers,
+      {
+        type: 'Control',
+        scope: '#/properties/toggle',
+      }
+    );
+
+    const input = twoStateWrapper.find('input[type="checkbox"]');
+    await input.trigger('click');
+    await input.trigger('click');
+
+    expect(twoStateWrapper.vm.$data.data.toggle).toBe(false);
+    expect('toggle' in twoStateWrapper.vm.$data.data).toBe(true);
+
+    twoStateWrapper.destroy();
+  });
 });
