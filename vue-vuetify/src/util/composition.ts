@@ -277,6 +277,8 @@ export const useVuetifyBasicControl = <I extends { control: any }>(
   input: I
 ) => {
   const appliedOptions = useControlAppliedOptions(input);
+  const styles = useStyles(input.control.value.uischema);
+  const isFocused = ref(false);
 
   const vuetifyProps = (path: string) => {
     const props = get(appliedOptions.value?.vuetify, path);
@@ -284,11 +286,42 @@ export const useVuetifyBasicControl = <I extends { control: any }>(
     return props && isPlainObject(props) ? props : {};
   };
 
+  const handleFocus = () => {
+    isFocused.value = true;
+  };
+
+  const handleBlur = () => {
+    isFocused.value = false;
+  };
+
+  const persistentHint = (): boolean => {
+    return !isDescriptionHidden(
+      input.control.value.visible,
+      input.control.value.description,
+      isFocused.value,
+      !!appliedOptions.value?.showUnfocusedDescription
+    );
+  };
+
+  const computedLabel = useComputedLabel(input, appliedOptions);
+
+  const controlWrapper = computed(() => {
+    const { id, description, errors, label, visible, required } =
+      input.control.value;
+    return { id, description, errors, label, visible, required };
+  });
+
   return {
     ...input,
-    styles: useStyles(input.control.value.uischema),
+    styles,
     appliedOptions,
     vuetifyProps,
+    isFocused,
+    handleFocus,
+    handleBlur,
+    persistentHint,
+    computedLabel,
+    controlWrapper,
   };
 };
 

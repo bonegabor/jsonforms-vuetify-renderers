@@ -1,21 +1,46 @@
 <template>
-  <v-container fluid v-if="control.visible">
-    <v-row>
-      <v-col v-for="(o, index) in control.options" :key="o.value">
-        <v-checkbox
-          :label="o.label"
-          :model-value="dataHasEnum(o.value)"
-          :id="control.id + `-input-${index}`"
-          :path="composePaths(control.path, `${index}`)"
-          :error-messages="control.errors"
-          :disabled="!control.enabled"
-          :indeterminate="control.data === undefined"
-          v-bind="vuetifyProps(`v-checkbox[${o.value}]`)"
-          @change="(value) => toggle(o.value)"
-        ></v-checkbox>
-      </v-col>
-    </v-row>
-  </v-container>
+  <control-wrapper
+    v-bind="controlWrapper"
+    :styles="styles"
+    :isFocused="isFocused"
+    :appliedOptions="appliedOptions"
+  >
+    <v-label :for="control.id + '-input'" v-bind="vuetifyProps('v-label')">{{
+      computedLabel
+    }}</v-label>
+    <v-messages
+      v-if="control.description && persistentHint()"
+      :active="true"
+      :messages="[control.description]"
+      class="text-body-2 mb-2 text-medium-emphasis"
+    ></v-messages>
+    <v-container fluid>
+      <v-row>
+        <v-col v-for="(o, index) in control.options" :key="o.value">
+          <v-checkbox
+            :label="o.label"
+            :model-value="dataHasEnum(o.value)"
+            :id="control.id + `-input-${index}`"
+            :path="composePaths(control.path, `${index}`)"
+            :disabled="!control.enabled"
+            :indeterminate="control.data === undefined"
+            :error="!!control.errors"
+            v-bind="vuetifyProps(`v-checkbox[${o.value}]`)"
+            @change="() => toggle(o.value)"
+            @focus="handleFocus"
+            @blur="handleBlur"
+          ></v-checkbox>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-messages
+      v-if="control.errors"
+      :active="true"
+      color="error"
+      :messages="[control.errors]"
+      class="mt-2"
+    ></v-messages>
+  </control-wrapper>
 </template>
 
 <script lang="ts">
@@ -31,7 +56,14 @@ import {
   uiTypeIs,
   composePaths,
 } from '@jsonforms/core';
-import { VCheckbox, VContainer, VRow, VCol } from 'vuetify/components';
+import {
+  VCheckbox,
+  VContainer,
+  VRow,
+  VCol,
+  VLabel,
+  VMessages,
+} from 'vuetify/components';
 import {
   rendererProps,
   RendererProps,
@@ -39,14 +71,18 @@ import {
 } from '@jsonforms/vue';
 import { defineComponent } from 'vue';
 import { useVuetifyBasicControl } from '../util';
+import { default as ControlWrapper } from '../controls/ControlWrapper.vue';
 
 const controlRenderer = defineComponent({
   name: 'enum-array-renderer',
   components: {
+    ControlWrapper,
     VCheckbox,
     VContainer,
     VRow,
     VCol,
+    VLabel,
+    VMessages,
   },
   props: {
     ...rendererProps<ControlElement>(),
