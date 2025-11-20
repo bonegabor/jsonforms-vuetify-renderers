@@ -16,7 +16,11 @@
     ></v-messages>
     <v-container fluid>
       <v-row>
-        <v-col v-for="(o, index) in control.options" :key="o.value">
+        <v-col
+          v-for="(o, index) in control.options"
+          :key="o.value"
+          v-bind="vuetifyProps('v-col')"
+        >
           <v-checkbox
             :label="o.label"
             :model-value="dataHasEnum(o.value)"
